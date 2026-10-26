@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NailBook | نوبت زیبایی تو</title>
+<style>
+:root{--pink:#d98e9c;--dark:#49363b;--cream:#fffaf6;--pale:#f8e9e9;--muted:#8c7a7d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--dark);font-family:Tahoma,Arial,sans-serif}
+header{padding:18px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0e4e1;background:#fffaf6;position:sticky;top:0;z-index:2}
+.logo{font-size:24px;font-weight:bold;color:#bd7585}.logo span{color:var(--dark)}
+button{cursor:pointer;border:0;border-radius:12px;padding:12px 18px;font:inherit}
+.primary{background:var(--pink);color:white;font-weight:bold}
+.secondary{background:white;color:var(--dark);border:1px solid #ead8d9}
+.hero{padding:58px 7% 42px;background:linear-gradient(120deg,#f8e7e6,#fff8f1);display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:24px}
+.hero h1{font-size:clamp(28px,4vw,46px);line-height:1.6;margin:0 0 10px}
+.hero p{color:#766469;line-height:2}
+.hero-art{background:#f1d7d8;border-radius:48% 48% 22px 22px;min-height:230px;display:flex;align-items:center;justify-content:center;font-size:100px}
+.search{margin:-20px auto 0;position:relative;background:white;padding:14px;border-radius:16px;box-shadow:0 8px 30px #49363b12;display:flex;gap:10px;width:86%;max-width:900px}
+.search input{flex:1;min-width:0;border:0;outline:0;font:inherit;padding:10px}
+section{padding:36px 7%}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h2{font-size:23px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.filter{background:#f5e9e8;color:var(--dark);padding:9px 14px}.filter.active{background:var(--dark);color:white}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:white;border:1px solid #f0e5e3;border-radius:18px;overflow:hidden;transition:.2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 24px #49363b10}
+.cover{height:150px;display:flex;justify-content:center;align-items:center;font-size:58px;background:linear-gradient(135deg,#f5dddd,#f9eee5)}
+.card-body{padding:16px}
+.card h3{margin:0 0 8px}.meta{font-size:13px;color:var(--muted);line-height:2}
+.price{font-weight:bold;margin:12px 0;color:#9b5d6b}
+.card-actions{display:flex;gap:8px}.card-actions button{flex:1;padding:10px 5px;font-size:13px}
+.banner{background:var(--dark);color:white;border-radius:22px;padding:28px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.banner p{color:#eadcdf;line-height:1.9}
+footer{text-align:center;padding:28px;color:var(--muted);font-size:13px;border-top:1px solid #f0e4e1}
+.modal{display:none;position:fixed;inset:0;background:#24171bb8;z-index:5;align-items:center;justify-content:center;padding:18px}
+.modal.show{display:flex}
+.modal-box{background:white;padding:24px;border-radius:20px;width:100%;max-width:420px}
+.modal-box input,.modal-box select{width:100%;padding:12px;margin:8px 0 14px;border:1px solid #e8d9da;border-radius:10px;font:inherit}
+.close{float:left;background:#f5e9e8}
+.note{font-size:12px;color:var(--muted);line-height:1.9}
+@media(max-width:700px){.hero{grid-template-columns:1fr;padding-top:35px}.hero-art{min-height:130px;font-size:65px}.cards{grid-template-columns:1fr 1fr}.search{width:92%}header{padding:15px 5%}section{padding:28px 5%}}
+@media(max-width:440px){.cards{grid-template-columns:1fr}.hero h1{font-size:29px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Nail<span>Book</span> ♡</div>
+  <button class="primary" onclick="openModal('artist')">ثبت‌نام ناخن‌کارها</button>
+</header>
+
+<div class="hero">
+  <div>
+    <p>زیبایی، فقط چند کلیک فاصله داره ✨</p>
+    <h1>ناخن‌کارت رو پیدا کن،<br>با خیال راحت نوبت بگیر.</h1>
+    <p>نمونه‌کارها رو ببین، قیمت‌ها رو مقایسه کن و ناخن‌کار موردعلاقه‌ات رو انتخاب کن.</p>
+    <button class="primary" onclick="document.getElementById('artists').scrollIntoView({behavior:'smooth'})">دیدن ناخن‌کارها ←</button>
+  </div>
+  <div class="hero-art">💅🏻</div>
+</div>
+
+<div class="search">
+  <input id="searchInput" placeholder="نام ناخن‌کار یا سبک موردعلاقه‌ات..." oninput="filterCards()">
+  <button class="primary" onclick="filterCards()">جستجو</button>
+</div>
+
+<section id="artists">
+  <div class="section-head">
+    <div><h2>ناخن‌کارهای منتخب</h2><div class="meta">استایل خودت رو پیدا کن 💗</div></div>
+    <span class="meta">نمونه‌ی نمایشی</span>
+  </div>
+  <div class="filters">
+    <button class="filter active" onclick="setFilter('همه',this)">همه</button>
+    <button class="filter" onclick="setFilter('مینیمال',this)">مینیمال</button>
+    <button class="filter" onclick="setFilter('ژل',this)">ژلیش</button>
+    <button class="filter" onclick="setFilter('فانتزی',this)">فانتزی</button>
+  </div>
+  <div class="cards" id="cards">
+    <article class="card" data-name="سارا مینیمال ژل" data-style="مینیمال">
+      <div class="cover">🌸💅🏻</div><div class="card-body">
+      <h3>سارا محمدی</h3><div class="meta">📍 تهران · سعادت‌آباد</div>
+      <div class="meta">⭐ ۴.۹ · ۳۸ نظر</div><div class="price">از ۴۵۰ هزار تومان</div>
+      <div class="card-actions"><button class="secondary" onclick="openModal('profile','سارا محمدی')">مشاهده پروفایل</button><button class="primary" onclick="openModal('booking','سارا محمدی')">نوبت</button></div>
+      </div>
+    </article>
+    <article class="card" data-name="نازنین ژل فانتزی" data-style="ژل">
+      <div class="cover" style="background:linear-gradient(135deg,#eadcf5,#f9e7e5)">💜✨</div><div class="card-body">
+      <h3>نازنین رضایی</h3><div class="meta">📍 تهران · صادقیه</div>
+      <div class="meta">⭐ ۴.۸ · ۲۶ نظر</div><div class="price">از ۳۵۰ هزار تومان</div>
+      <div class="card-actions"><button class="secondary" onclick="openModal('profile','نازنین رضایی')">مشاهده پروفایل</button><button class="primary" onclick="openModal('booking','نازنین رضایی')">نوبت</button></div>
+      </div>
+    </article>
+    <article class="card" data-name="مریم فانتزی مینیمال" data-style="فانتزی">
+      <div class="cover" style="background:linear-gradient(135deg,#f4e5cf,#f4d6dc)">🌷💖</div><div class="card-body">
+      <h3>مریم کریمی</h3><div class="meta">📍 کرج · عظیمیه</div>
+      <div class="meta">⭐ ۵.۰ · ۱۹ نظر</div><div class="price">از ۵۰۰ هزار تومان</div>
+      <div class="card-actions"><button class="secondary" onclick="openModal('profile','مریم کریمی')">مشاهده پروفایل</button><button class="primary" onclick="openModal('booking','مریم کریمی')">نوبت</button></div>
+      </div>
+    </article>
+  </div>
+  <p class="note" id="empty" style="display:none">موردی پیدا نشد. نام یا سبک دیگری را امتحان کن.</p>
+</section>
+
+<section>
+  <div class="banner">
+    <div><h2>ناخن‌کاری؟ جای تو اینجاست. 💅</h2><p>پروفایلت رو بساز، نمونه‌کارهات رو نمایش بده و مشتری‌های بیشتری پیدا کن.</p></div>
+    <button class="primary" onclick="openModal('artist')">شروع ثبت‌نام</button>
+  </div>
+</section>
+
+<footer>NailBook ♡ · راه ساده‌تر برای پیدا کردن ناخن‌کار</footer>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+<script>
+let activeStyle='همه';
+function setFilter(style,btn){
+ activeStyle=style;
+ document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');filterCards();
+}
+function filterCards(){
+ const q=document.getElementById('searchInput').value.trim().toLowerCase();
+ let count=0;
+ document.querySelectorAll('.card').forEach(card=>{
+  const matchText=(card.dataset.name+' '+card.innerText).toLowerCase().includes(q);
+  const matchStyle=activeStyle==='همه'||card.dataset.style===activeStyle;
+  card.style.display=matchText&&matchStyle?'':'none';
+  if(matchText&&matchStyle)count++;
+ });
+ document.getElementById('empty').style.display=count?'none':'block';
+}
+function openModal(type,name=''){
+ const modal=document.getElementById('modal'), content=document.getElementById('modalContent');
+ if(type==='booking'){
+  content.innerHTML=`<h2>درخواست نوبت</h2><p>ناخن‌کار: <b>${name}</b></p>
+  <form onsubmit="event.preventDefault();alert('این نسخه نمایشی است؛ هنوز نوبت واقعاً ثبت نمی‌شود.');closeModal()">
+  <label>نام و نام خانوادگی</label><input required placeholder="نام شما">
+  <label>شماره تماس</label><input required type="tel" placeholder="09xxxxxxxxx">
+  <label>خدمت موردنظر</label><select><option>مانیکور</option><option>ژلیش</option><option>کاشت ناخن</option><option>ترمیم</option><option>طراحی</option></select>
+  <label>تاریخ پیشنهادی</label><input required type="date">
+  <button class="primary" style="width:100%">ادامه</button></form><p class="note">در نسخه‌ی واقعی، زمان‌های آزاد نمایش داده می‌شوند و نوبت در سیستم ذخیره خواهد شد.</p>`;
+ }else if(type==='artist'){
+  content.innerHTML=`<h2>ثبت‌نام ناخن‌کارها 💗</h2><p>به‌زودی می‌تونی پروفایل حرفه‌ای خودت رو بسازی.</p>
+  <form onsubmit="event.preventDefault();alert('این فرم در نسخه نمایشی است و اطلاعات ذخیره نمی‌شوند.');closeModal()">
+  <label>نام و نام خانوادگی</label><input required placeholder="نام شما">
+  <label>شماره تماس</label><input required type="tel" placeholder="09xxxxxxxxx">
+  <label>شهر</label><input required placeholder="مثلاً تهران">
+  <label>آیدی اینستاگرام (اختیاری)</label><input placeholder="@yourpage">
+  <button class="primary" style="width:100%">ثبت اطلاعات آزمایشی</button></form><p class="note">این فرم فعلاً اطلاعات را ذخیره نمی‌کند.</p>`;
+ }else{
+  content.innerHTML=`<h2>${name}</h2><p>💅 نمونه‌کارها و خدمات</p><p>⭐ امتیاز نمایشی · قیمت‌ها از کارت پروفایل</p><p>در نسخه‌ی کامل، گالری تصاویر، فهرست خدمات، ساعات کاری و نظرات مشتریان در این صفحه قرار می‌گیرند.</p><button class="primary" onclick="openModal('booking','${name}')">درخواست نوبت</button>`;
+ }
+ modal.classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+</script>
+</body>
+</html>
